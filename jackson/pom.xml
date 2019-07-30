@@ -8,6 +8,7 @@
   </parent>
 
   <artifactId>enunciate-jackson</artifactId>
+    <version>2.11.2-SNAPSHOT</version>
   <name>Enunciate - Jackson 2.x JSON Model Support</name>
   <description>Model processing for Jackson 2.x JSON.</description>
 
@@ -15,7 +16,7 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>enunciate-core</artifactId>
-      <version>${project.version}</version>
+      <version>2.11.1</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
