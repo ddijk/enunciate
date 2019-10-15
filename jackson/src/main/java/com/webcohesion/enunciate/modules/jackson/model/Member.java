@@ -363,7 +363,12 @@ public class Member extends Accessor {
     @Override
     public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
 
-        AnnotationMirror annotationMirror = getAnnotations().get(annotationType.getCanonicalName());
+        String annotationName = annotationType.getCanonicalName();
+        if ( !annotationName.startsWith("javax.validation.constraints")) {
+            return super.getAnnotation(annotationType);
+        }
+
+        AnnotationMirror annotationMirror = getAnnotations().get(annotationName);
 
         if (ValidationGroupHelper.hasMatchingValidationGroup(getContext().getBeanValidationGroups(), annotationMirror)) {
 
