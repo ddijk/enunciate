@@ -37,7 +37,7 @@ public class ValidationGroupHelper {
 
     private static String stripDotClass(String className) {
 
-        return className.replace(".class", "").trim();
+        return className.trim();
 
     }
 
@@ -79,7 +79,29 @@ public class ValidationGroupHelper {
      * if at least one validation group matches, then the constraint should be applied
      */
     private static boolean validationGroupOnFieldMatchesWithActiveGroup(List<String> groupsOnField, List<String> activeValidationGroups) {
-        return groupsOnField.stream().anyMatch(activeValidationGroups::contains);
+        return groupsOnField.stream().anyMatch(g -> groupOnFieldMatchesActiveGroup(g, activeValidationGroups));
     }
+
+    private static boolean groupOnFieldMatchesActiveGroup(String groupOnField, List<String> activeValidationGroups) {
+        Class validationGroupClassOnField;
+        try {
+            validationGroupClassOnField = Class.forName(groupOnField);
+        } catch (ClassNotFoundException e) {
+            System.err.println(String.format("Failed to find class for validation group on field: '%s'", groupOnField));
+            return false;
+        }
+
+        for (String activeGroup : activeValidationGroups) {
+            try {
+                if (Class.forName(activeGroup).isAssignableFrom(validationGroupClassOnField)) {
+                    return true;
+                }
+            } catch (ClassNotFoundException e) {
+                System.err.println(String.format("Failed to find class for validation group in Enunciate config file: '%s' ", activeGroup));
+            }
+        }
+        return false;
+    }
+
 
 }
