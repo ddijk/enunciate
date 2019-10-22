@@ -18,6 +18,7 @@ package com.webcohesion.enunciate.modules.jackson.model;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.webcohesion.enunciate.javac.decorations.Annotations;
+import com.webcohesion.enunciate.javac.decorations.element.DecoratedTypeElement;
 import com.webcohesion.enunciate.javac.decorations.type.DecoratedTypeMirror;
 import com.webcohesion.enunciate.modules.jackson.EnunciateJacksonContext;
 import com.webcohesion.enunciate.beanval.ValidationGroupHelper;
@@ -31,6 +32,7 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 import javax.xml.bind.annotation.*;
 import java.beans.Introspector;
 import java.lang.annotation.Annotation;
@@ -56,6 +58,25 @@ public class Member extends Accessor {
 
     public Member(javax.lang.model.element.Element delegate, TypeDefinition typedef, EnunciateJacksonContext context) {
         super(delegate, typedef, context);
+
+        //this.context.context.apiElements.toArray()[24]
+        Object[] objects = context.getContext().getApiElements().toArray();
+
+        Class subType =null;
+        Class superType =null;
+        for ( Object o : objects) {
+            if ( o.toString().equals("com.ifyouwannabecool.beanval.DataAPI")) {
+
+                superType= ((DecoratedTypeElement)o).asType().getClass();
+            }
+
+            if ( o.toString().equals("com.ifyouwannabecool.beanval.SubDataAPI")) {
+
+                subType= ((DecoratedTypeElement)o).asType().getClass();
+            }
+        }
+        boolean b = subType.isAssignableFrom(superType);
+        System.out.println("** b = " + b);
 
         this.propertyInfo = getAnnotation(JsonProperty.class);
         this.choices = new ArrayList<Member>();
@@ -364,7 +385,7 @@ public class Member extends Accessor {
     public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
 
         String annotationName = annotationType.getCanonicalName();
-        if ( !annotationName.startsWith("javax.validation.constraints")) {
+        if (!annotationName.startsWith("javax.validation.constraints")) {
             return super.getAnnotation(annotationType);
         }
 

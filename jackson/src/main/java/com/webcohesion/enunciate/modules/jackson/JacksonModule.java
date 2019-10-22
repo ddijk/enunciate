@@ -117,6 +117,13 @@ public class JacksonModule extends BasicProviderModule implements TypeDetectingM
 
   @Override
   public void call(EnunciateContext context) {
+    System.out.println("**** Calll");
+    try {
+      Class.forName("com.ifyouwannabecool.beanval.DataAPI");
+      System.out.println("**** Class loaded");
+    } catch (ClassNotFoundException e) {
+      System.out.println("**** FAILED");
+    }
     for (EnunciateModule module : this.enunciate.getModules()) {
       if ("jackson1".equals(module.getName()) && module.isEnabled()) {
         error("");
